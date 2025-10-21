@@ -1150,7 +1150,7 @@
             
             async loadData() {
                 try {
-                    const response = await fetch('/api/data');
+                    const response = await fetch('sigrid_data_cache.json'); // Leer directamente el JSON
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
                     }
@@ -1166,7 +1166,7 @@
                         <div class="no-results">
                             <div class="no-results-icon">⚠️</div>
                             <h2>Error al cargar datos</h2>
-                            <p>No se pudo obtener la información del servidor. Inténtalo de nuevo más tarde.</p>
+                            <p>No se pudo obtener la información del servidor. Asegúrate de que 'sigrid_data_cache.json' esté en la misma carpeta.</p>
                         </div>
                     `;
                 }
