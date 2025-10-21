@@ -1,0 +1,1910 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGRID - Estudios de Evaluación de Riesgos</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        :root {
+            --primary: #00d4aa;
+            --primary-dark: #00b890;
+            --secondary: #6366f1;
+            --accent: #f59e0b;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --shadow: rgba(0, 0, 0, 0.3);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-darker);
+            color: var(--text-primary);
+            overflow-x: hidden;
+        }
+        
+        /* Fondo animado */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(135deg, var(--bg-darker) 0%, var(--bg-dark) 100%);
+        }
+        
+        .animated-bg::before {
+            content: '';
+            position: absolute;
+            width: 800px;
+            height: 800px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%);
+            top: -400px;
+            left: -400px;
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .animated-bg::after {
+            content: '';
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(0, 212, 170, 0.15) 0%, transparent 70%);
+            bottom: -300px;
+            right: -300px;
+            animation: float 15s infinite ease-in-out reverse;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            33% { transform: translate(100px, -100px) rotate(120deg); }
+            66% { transform: translate(-50px, 100px) rotate(240deg); }
+        }
+        
+        /* Header moderno */
+        header {
+            position: relative;
+            padding: 3rem 2rem;
+            text-align: center;
+            backdrop-filter: blur(20px);
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .header-content h1 {
+            font-size: 3.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.5rem;
+            animation: slideDown 0.8s ease;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .header-content p {
+            font-size: 1.2em;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            animation: slideDown 0.8s ease 0.2s backwards;
+        }
+        
+        /* Controles de filtro modernos */
+        .controls {
+            max-width: 1200px;
+            margin: 0 auto;
+            animation: slideDown 0.8s ease 0.4s backwards;
+        }
+        
+        .search-wrapper {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .search-box input {
+            width: 100%;
+            padding: 1.2rem 3.5rem 1.2rem 1.5rem;
+            font-size: 1.1em;
+            border: 2px solid var(--border);
+            border-radius: 60px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            color: var(--text-primary);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: rgba(30, 41, 59, 1);
+            box-shadow: 0 0 0 4px rgba(0, 212, 170, 0.15), 0 20px 40px rgba(0, 0, 0, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .search-icon {
+            position: absolute;
+            right: 1.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.3em;
+        }
+        
+        /* Filtros chips */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+        
+        .filter-chip {
+            padding: 0.7rem 1.5rem;
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .filter-chip:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0, 212, 170, 0.2);
+        }
+        
+        .filter-chip.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-color: transparent;
+            color: white;
+            font-weight: 600;
+        }
+        
+        .filter-chip .count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 0.2rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.85em;
+        }
+        
+        /* Stats bar */
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            padding: 1.5rem;
+            margin: 2rem auto;
+            max-width: 1200px;
+            flex-wrap: wrap;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 1rem 2rem;
+            background: rgba(30, 41, 59, 0.5);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+        
+        .stat-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+        
+        .stat-number {
+            font-size: 2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 0.3rem;
+        }
+        
+        /* Grid de tarjetas */
+        .studies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            padding: 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        /* Tarjetas ultra modernas */
+        .study-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .study-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transform: scaleX(0);
+            transition: transform 0.4s ease;
+        }
+        
+        .study-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 212, 170, 0.3);
+        }
+        
+        .study-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .card-image {
+            position: relative;
+            height: 220px;
+            overflow: hidden;
+        }
+        
+        .card-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .study-card:hover .card-image img {
+            transform: scale(1.15);
+        }
+        
+        .card-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.9) 100%);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        
+        .study-card:hover .card-overlay {
+            opacity: 1;
+        }
+        
+        /* Botón de expandir */
+        .expand-btn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.4s ease;
+            z-index: 10;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        .study-card:hover .expand-btn {
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .expand-btn:hover {
+            transform: translate(-50%, -50%) scale(1.1);
+            box-shadow: 0 15px 40px rgba(0, 212, 170, 0.4);
+        }
+        
+        .card-content {
+            padding: 1.8rem;
+        }
+        
+        .card-title {
+            font-size: 1.4em;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+        
+        .study-card:hover .card-title {
+            color: var(--primary);
+        }
+        
+        .card-summary {
+            font-size: 0.95em;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .card-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            font-size: 0.9em;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+        
+        .meta-icon {
+            color: var(--primary);
+            margin-top: 0.2rem;
+            flex-shrink: 0;
+        }
+        
+        .keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .keyword-tag {
+            padding: 0.3rem 0.8rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            border-radius: 20px;
+            font-size: 0.8em;
+            color: var(--secondary);
+        }
+        
+        /* MODAL MODERNO */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(2, 6, 23, 0.95);
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+            padding: 2rem;
+        }
+        
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        .modal-content {
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border);
+            border-radius: 30px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.8) translateY(50px);
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+        }
+        
+        .modal-overlay.active .modal-content {
+            transform: scale(1) translateY(0);
+        }
+        
+        .modal-header {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+            border-radius: 28px 28px 0 0;
+        }
+        
+        .modal-header img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .modal-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 150px;
+            background: linear-gradient(180deg, transparent 0%, rgba(30, 41, 59, 0.95) 100%);
+        }
+        
+        .modal-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 50px;
+            height: 50px;
+            background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            color: var(--text-primary);
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+        
+        .modal-close:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: rotate(90deg) scale(1.1);
+        }
+        
+        .modal-body {
+            padding: 2.5rem;
+        }
+        
+        .modal-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1.5rem;
+            line-height: 1.3;
+        }
+        
+        .modal-section {
+            margin-bottom: 2rem;
+        }
+        
+        .modal-section-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .modal-text {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            font-size: 1.05em;
+        }
+        
+        .modal-keywords {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+        }
+        
+        .modal-keyword {
+            padding: 0.6rem 1.2rem;
+            background: rgba(99, 102, 241, 0.2);
+            border: 1px solid rgba(99, 102, 241, 0.4);
+            border-radius: 25px;
+            color: var(--secondary);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-keyword:hover {
+            background: rgba(99, 102, 241, 0.3);
+            transform: translateY(-2px);
+        }
+        
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2.5rem;
+            flex-wrap: wrap;
+        }
+        
+        .modal-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 1.2rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.3);
+        }
+        
+        .modal-btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(0, 212, 170, 0.4);
+        }
+        
+        .modal-btn-secondary {
+            background: rgba(30, 41, 59, 0.8);
+            color: var(--text-primary);
+            border: 2px solid var(--border);
+        }
+        
+        .modal-btn-secondary:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-3px);
+        }
+        
+        .modal-btn-share {
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3);
+        }
+        
+        .modal-btn-share:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(245, 158, 11, 0.4);
+        }
+        
+        .modal-btn-download {
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.3);
+        }
+        
+        .modal-btn-download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(139, 92, 246, 0.4);
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: rgba(30, 41, 59, 0.95);
+            backdrop-filter: blur(20px);
+            color: var(--text-primary);
+            padding: 1.2rem 2rem;
+            border-radius: 15px;
+            border: 2px solid var(--primary);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+            transform: translateY(150px);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            max-width: 400px;
+        }
+        
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .toast-icon {
+            font-size: 1.5em;
+        }
+        
+        .toast-content {
+            flex: 1;
+        }
+        
+        .toast-title {
+            font-weight: 600;
+            margin-bottom: 0.3rem;
+        }
+        
+        .toast-message {
+            font-size: 0.9em;
+            color: var(--text-secondary);
+        }
+        
+        /* Share menu */
+        .share-menu {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            background: rgba(30, 41, 59, 0.98);
+            backdrop-filter: blur(20px);
+            border: 2px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            z-index: 1500;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.6);
+            min-width: 350px;
+        }
+        
+        .share-menu.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: translate(-50%, -50%) scale(1);
+        }
+        
+        .share-menu-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .share-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+        }
+        
+        .share-option {
+            padding: 1rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .share-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 212, 170, 0.2);
+        }
+        
+        .share-option-icon {
+            font-size: 2em;
+        }
+        
+        .share-option-text {
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+        
+        .share-close {
+            margin-top: 1rem;
+            width: 100%;
+            padding: 0.8rem;
+            background: rgba(15, 23, 42, 0.8);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .share-close:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+        
+        .share-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1400;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+        
+        .share-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+        
+        /* Loading y estados */
+        .loading {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            border: 4px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            grid-column: 1 / -1;
+        }
+        
+        .no-results-icon {
+            font-size: 4em;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+        
+        /* Paginación moderna */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 3rem 2rem;
+            flex-wrap: wrap;
+        }
+        
+        .page-btn {
+            min-width: 45px;
+            height: 45px;
+            border: 2px solid var(--border);
+            background: rgba(30, 41, 59, 0.6);
+            backdrop-filter: blur(10px);
+            color: var(--text-secondary);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .page-btn:hover:not(.active) {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+        
+        .page-btn.active {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-color: transparent;
+            color: white;
+            transform: scale(1.1);
+        }
+        
+        .ellipsis {
+            color: var(--text-secondary);
+            padding: 0 0.5rem;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content h1 {
+                font-size: 2.2em;
+            }
+            
+            .studies-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+            }
+            
+            .filters {
+                padding: 0 1rem;
+            }
+            
+            .stats-bar {
+                gap: 1rem;
+            }
+            
+            .modal-content {
+                margin: 1rem;
+                max-height: 95vh;
+            }
+            
+            .modal-body {
+                padding: 1.5rem;
+            }
+            
+            .modal-title {
+                font-size: 1.6em;
+            }
+            
+            .modal-actions {
+                flex-direction: column;
+            }
+            
+            .modal-btn {
+                min-width: 100%;
+            }
+        }
+        
+        /* Scrollbar personalizado */
+        .modal-content::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+        
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+        
+        /* Animaciones de entrada */
+        .fade-in {
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="animated-bg"></div>
+    
+    <header>
+        <div class="header-content">
+            <h1>🛡️ SIGRID Moquegua</h1>
+            <p>Plataforma de Estudios de Evaluación de Riesgos</p>
+            
+            <div class="controls">
+                <div class="search-wrapper">
+                    <div class="search-box">
+                        <input type="text" id="search-input" placeholder="Buscar estudios por título, ubicación, palabras clave...">
+                        <span class="search-icon">🔍</span>
+                    </div>
+                </div>
+                
+                <div class="filters" id="filters-container">
+                    <div class="filter-chip active" data-filter="all">
+                        📚 Todos <span class="count" id="count-all">0</span>
+                    </div>
+                    <div class="filter-chip" data-filter="moquegua">
+                        📍 Moquegua <span class="count" id="count-moquegua">0</span>
+                    </div>
+                    <div class="filter-chip" data-filter="ilo">
+                        🏙️ Ilo <span class="count" id="count-ilo">0</span>
+                    </div>
+                    <div class="filter-chip" data-filter="evar">
+                        🔬 EVAR <span class="count" id="count-evar">0</span>
+                    </div>
+                    <div class="filter-chip" data-filter="recent">
+                        ⭐ Recientes <span class="count" id="count-recent">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <div class="stats-bar">
+        <div class="stat-item">
+            <div class="stat-number" id="total-studies">0</div>
+            <div class="stat-label">Total Estudios</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="showing-count">0</div>
+            <div class="stat-label">Mostrando</div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-number" id="filtered-count">0</div>
+            <div class="stat-label">Filtrados</div>
+        </div>
+    </div>
+    
+    <main>
+        <div class="studies-grid" id="studies-container">
+            <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando estudios increíbles...</p>
+            </div>
+        </div>
+        
+        <div id="pagination-container"></div>
+        </main>
+    
+        <!-- SHARE MENU -->
+        <div class="share-overlay" id="share-overlay" onclick="app.closeShareMenu()"></div>
+        <div class="share-menu" id="share-menu">
+            <h3 class="share-menu-title">Compartir Estudio</h3>
+            <div class="share-options">
+                <div class="share-option" onclick="app.shareVia('whatsapp')"><span class="share-option-icon">💬</span><span>WhatsApp</span></div>
+                <div class="share-option" onclick="app.shareVia('twitter')"><span class="share-option-icon">🐦</span><span>Twitter</span></div>
+                <div class="share-option" onclick="app.shareVia('facebook')"><span class="share-option-icon">👍</span><span>Facebook</span></div>
+                <div class="share-option" onclick="app.shareVia('linkedin')"><span class="share-option-icon">🔗</span><span>LinkedIn</span></div>
+                <div class="share-option" onclick="app.shareVia('email')
+                "><span class="share-option-icon">✉️</span><span>Email</span></div>
+                <div class="share-option" onclick="app.shareVia('copy')"><span class="share-option-icon">📋</span><span>Copiar Enlace</span></div>
+            </div>
+            <button class="share-close" onclick="app.closeShareMenu()">Cerrar</button>
+        </div>
+    
+        <!-- TOAST NOTIFICATION -->
+        <div class="toast" id="toast">
+            <div class="toast-icon"></div>
+            <div class="toast-content">
+                <div class="toast-title" id="toast-title"></div>
+                <div class="toast-message" id="toast-message"></div>
+            </div>
+        </div>
+    
+        <!-- MODAL -->    <div class="modal-overlay" id="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="app.closeModal()">×</button>
+            <div class="modal-header">
+                <img id="modal-image" src="" alt="">
+            </div>
+            <div class="modal-body">
+                <h2 class="modal-title" id="modal-title"></h2>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title">📝 Resumen Completo</h3>
+                    <p class="modal-text" id="modal-summary"></p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title">📍 Institución y Ubicación</h3>
+                    <p class="modal-text" id="modal-location"></p>
+                </div>
+                
+                <div class="modal-section">
+                    <h3 class="modal-section-title">🏷️ Palabras Clave</h3>
+                    <div class="modal-keywords" id="modal-keywords"></div>
+                </div>
+                
+                <div class="modal-actions">
+                    <a class="modal-btn modal-btn-primary" id="modal-link" href="#" target="_blank">
+                        🔗 Ver Estudio Completo
+                    </a>
+                    <button class="modal-btn modal-btn-share" onclick="app.shareStudy()">
+                        📤 Compartir
+                    </button>
+                    <button class="modal-btn modal-btn-download" onclick="app.downloadPDF()">
+                        📥 Descargar PDF
+                    </button>
+                    <button class="modal-btn modal-btn-secondary" onclick="app.closeModal()">
+                        ← Cerrar
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script>
+        class ModernStudiesApp {
+            constructor() {
+                this.allStudies = [];
+                this.filteredStudies = [];
+                this.currentPage = 1;
+                this.studiesPerPage = 9;
+                this.currentFilter = 'all';
+                this.searchTerm = '';
+                this.currentStudy = null;
+                
+                this.init();
+            }
+            
+            init() {
+                this.setupEventListeners();
+                this.loadData();
+                this.addScrollAnimations();
+            }
+            
+            setupEventListeners() {
+                let searchTimeout;
+                const searchInput = document.getElementById('search-input');
+                searchInput.addEventListener('input', (e) => {
+                    clearTimeout(searchTimeout);
+                    searchInput.style.transform = 'scale(1.02)';
+                    setTimeout(() => searchInput.style.transform = '', 100);
+                    
+                    searchTimeout = setTimeout(() => {
+                        this.searchTerm = e.target.value.toLowerCase();
+                        this.applyFilters();
+                    }, 300);
+                });
+                
+                searchInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.searchTerm = e.target.value.toLowerCase();
+                        this.applyFilters();
+                    }
+                });
+                
+                document.querySelectorAll('.filter-chip').forEach(chip => {
+                    chip.addEventListener('click', (e) => {
+                        chip.style.transform = 'scale(0.95)';
+                        setTimeout(() => chip.style.transform = '', 150);
+                        
+                        document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+                        chip.classList.add('active');
+                        this.currentFilter = chip.dataset.filter;
+                        this.applyFilters();
+                    });
+                });
+                
+                // Cerrar modal con ESC
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape') this.closeModal();
+                });
+                
+                // Cerrar modal al hacer clic fuera
+                document.getElementById('modal').addEventListener('click', (e) => {
+                    if (e.target.id === 'modal') this.closeModal();
+                });
+            }
+            
+            addScrollAnimations() {
+                let lastScroll = 0;
+                const header = document.querySelector('header');
+                
+                window.addEventListener('scroll', () => {
+                    const currentScroll = window.pageYOffset;
+                    
+                    if (currentScroll > 100) {
+                        header.style.transform = currentScroll > lastScroll ? 'translateY(-100%)' : 'translateY(0)';
+                        header.style.boxShadow = '0 10px 40px rgba(0, 0, 0, 0.5)';
+                    } else {
+                        header.style.transform = 'translateY(0)';
+                    }
+                    
+                    lastScroll = currentScroll;
+                }, { passive: true });
+            }
+            
+            async loadData() {
+                try {
+                    const response = await fetch('/api/data');
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+                    const data = await response.json();
+                    this.allStudies = data.filter(s => s.Titulo && s.Titulo.trim());
+                    this.filteredStudies = [...this.allStudies];
+                    this.updateStats();
+                    this.updateFilterCounts();
+                    this.renderStudies();
+                } catch (error) {
+                    console.error('Error:', error);
+                    document.getElementById('studies-container').innerHTML = `
+                        <div class="no-results">
+                            <div class="no-results-icon">⚠️</div>
+                            <h2>Error al cargar datos</h2>
+                            <p>No se pudo obtener la información del servidor. Inténtalo de nuevo más tarde.</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            applyFilters() {
+                let filtered = [...this.allStudies];
+                
+                if (this.searchTerm) {
+                    filtered = filtered.filter(study => 
+                        (study.Titulo || '').toLowerCase().includes(this.searchTerm) ||
+                        (study.Resumen || '').toLowerCase().includes(this.searchTerm) ||
+                        (study['Institucion/Ubicacion'] || '').toLowerCase().includes(this.searchTerm) ||
+                        (study['Palabras Clave'] || '').toLowerCase().includes(this.searchTerm)
+                    );
+                }
+                
+                if (this.currentFilter !== 'all') {
+                    filtered = filtered.filter(study => {
+                        const text = `${study.Titulo} ${study['Institucion/Ubicacion']} ${study['Palabras Clave']}`.toLowerCase();
+                        return text.includes(this.currentFilter);
+                    });
+                }
+                
+                this.filteredStudies = filtered;
+                this.currentPage = 1;
+                this.updateStats();
+                this.renderStudies();
+            }
+            
+            updateFilterCounts() {
+                document.getElementById('count-all').textContent = this.allStudies.length;
+                document.getElementById('count-moquegua').textContent = 
+                    this.allStudies.filter(s => (s['Institucion/Ubicacion'] || '').toLowerCase().includes('moquegua')).length;
+                document.getElementById('count-ilo').textContent = 
+                    this.allStudies.filter(s => (s['Institucion/Ubicacion'] || '').toLowerCase().includes('ilo')).length;
+                document.getElementById('count-evar').textContent = 
+                    this.allStudies.filter(s => (s.Titulo || '').toLowerCase().includes('evar')).length;
+                document.getElementById('count-recent').textContent = 
+                    Math.min(20, this.allStudies.length);
+            }
+            
+            updateStats() {
+                document.getElementById('total-studies').textContent = this.allStudies.length;
+                document.getElementById('filtered-count').textContent = this.filteredStudies.length;
+                
+                const start = (this.currentPage - 1) * this.studiesPerPage;
+                const showing = Math.min(this.studiesPerPage, this.filteredStudies.length - start);
+                document.getElementById('showing-count').textContent = showing;
+            }
+            
+            openModal(study) {
+                this.currentStudy = study;
+                const modal = document.getElementById('modal');
+                
+                document.getElementById('modal-title').textContent = study.Titulo || 'Sin título';
+                document.getElementById('modal-summary').textContent = study.Resumen || 'Sin resumen disponible.';
+                document.getElementById('modal-location').textContent = study['Institucion/Ubicacion'] || 'Sin información disponible.';
+                
+                const imageUrl = study['URL Imagen'] || 'https://via.placeholder.com/900x300?text=Sin+Imagen';
+                document.getElementById('modal-image').src = imageUrl;
+                document.getElementById('modal-image').onerror = function() {
+                    this.src = 'https://via.placeholder.com/900x300?text=Sin+Imagen';
+                };
+                
+                const keywordsContainer = document.getElementById('modal-keywords');
+                const keywords = (study['Palabras Clave'] || '').split(',').filter(k => k.trim());
+                if (keywords.length > 0) {
+                    keywordsContainer.innerHTML = keywords.map(k => 
+                        `<span class="modal-keyword">${k.trim()}</span>`
+                    ).join('');
+                } else {
+                    keywordsContainer.innerHTML = '<span class="modal-text">Sin palabras clave disponibles</span>';
+                }
+                
+                const link = study.Enlace || '#';
+                document.getElementById('modal-link').href = link;
+                
+                modal.classList.add('active');
+                document.body.style.overflow = 'hidden';
+            }
+            
+            closeModal() {
+                const modal = document.getElementById('modal');
+                modal.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+            
+            shareStudy() {
+                document.getElementById('share-overlay').classList.add('active');
+                document.getElementById('share-menu').classList.add('active');
+            }
+            
+            closeShareMenu() {
+                document.getElementById('share-overlay').classList.remove('active');
+                document.getElementById('share-menu').classList.remove('active');
+            }
+            
+            shareVia(platform) {
+                if (!this.currentStudy) return;
+                
+                const title = this.currentStudy.Titulo || 'Estudio SIGRID';
+                const url = this.currentStudy.Enlace || window.location.href;
+                const text = `${title} - Estudio de Evaluación de Riesgos SIGRID Moquegua`;
+                
+                let shareUrl = '';
+                
+                switch(platform) {
+                    case 'whatsapp':
+                        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+                        break;
+                    case 'email':
+                        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                        break;
+                    case 'linkedin':
+                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'copy':
+                        navigator.clipboard.writeText(url).then(() => {
+                            this.closeShareMenu();
+                            this.showToast('¡Copiado!', 'El enlace se copió al portapapeles', '📋');
+                        }).catch(() => {
+                            this.showToast('Error', 'No se pudo copiar el enlace', '❌');
+                        });
+                        return;
+                }
+                
+                if (shareUrl) {
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    this.closeShareMenu();
+                    this.showToast('¡Compartido!', `Estudio compartido vía ${platform}`, '✅');
+                }
+            }
+            
+            downloadPDF() {
+                if (!this.currentStudy) return;
+                
+                if (!window.jspdf) {
+                    this.showToast('Error', 'Biblioteca PDF no cargada. Recargando...', '❌');
+                    setTimeout(() => window.location.reload(), 2000);
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 20;
+                const maxWidth = pageWidth - (margin * 2);
+                let yPos = 20;
+                
+                doc.setFontSize(20);
+                doc.setTextColor(0, 212, 170);
+                const titleLines = doc.splitTextToSize(this.currentStudy.Titulo || 'Sin título', maxWidth);
+                doc.text(titleLines, margin, yPos);
+                yPos += (titleLines.length * 10) + 10;
+                
+                doc.setDrawColor(0, 212, 170);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 10;
+                
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Institución y Ubicación:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(11);
+                const locationLines = doc.splitTextToSize(this.currentStudy['Institucion/Ubicacion'] || 'Sin información', maxWidth);
+                doc.text(locationLines, margin, yPos);
+                yPos += (locationLines.length * 6) + 10;
+                
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Resumen:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(10);
+                const summaryLines = doc.splitTextToSize(this.currentStudy.Resumen || 'Sin resumen disponible', maxWidth);
+                
+                summaryLines.forEach((line) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(line, margin, yPos);
+                    yPos += 6;
+                });
+                
+                yPos += 5;
+                
+                const keywords = (this.currentStudy['Palabras Clave'] || '').split(',').filter(k => k.trim());
+                if (keywords.length > 0) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text('Palabras Clave:', margin, yPos);
+                    yPos += 7;
+                    doc.setFontSize(10);
+                    doc.setTextColor(99, 102, 241);
+                    const keywordsText = keywords.map(k => k.trim()).join(', ');
+                    const keywordLines = doc.splitTextToSize(keywordsText, maxWidth);
+                    doc.text(keywordLines, margin, yPos);
+                    yPos += (keywordLines.length * 6) + 10;
+                }
+                
+                if (yPos > 260) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Enlace al estudio completo:', margin, yPos);
+                yPos += 7;
+                doc.setFontSize(9);
+                doc.setTextColor(0, 100, 200);
+                const linkText = this.currentStudy.Enlace || 'No disponible';
+                doc.textWithLink(linkText, margin, yPos, { url: this.currentStudy.Enlace });
+                
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`SIGRID Moquegua - Página ${i} de ${pageCount}`, pageWidth / 2, 285, { align: 'center' });
+                }
+                
+                const fileName = this.sanitizeFileName(this.currentStudy.Titulo || 'estudio') + '.pdf';
+                doc.save(fileName);
+                
+                this.showToast('¡Descargado!', 'PDF generado exitosamente', '📥');
+            }
+            
+            sanitizeFileName(name) {
+                return name
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .replace(/_+/g, '_')
+                    .substring(0, 50)
+                    .toLowerCase();
+            }
+            
+            showToast(title, message, icon = '✅') {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-title').textContent = title;
+                document.getElementById('toast-message').textContent = message;
+                document.querySelector('.toast-icon').textContent = icon;
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            shareStudy() {
+                document.getElementById('share-overlay').classList.add('active');
+                document.getElementById('share-menu').classList.add('active');
+            }
+            
+            closeShareMenu() {
+                document.getElementById('share-overlay').classList.remove('active');
+                document.getElementById('share-menu').classList.remove('active');
+            }
+            
+            shareVia(platform) {
+                if (!this.currentStudy) return;
+                
+                const title = this.currentStudy.Titulo || 'Estudio SIGRID';
+                const url = this.currentStudy.Enlace || window.location.href;
+                const text = `${title} - Estudio de Evaluación de Riesgos SIGRID Moquegua`;
+                
+                let shareUrl = '';
+                
+                switch(platform) {
+                    case 'whatsapp':
+                        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+                        break;
+                    case 'email':
+                        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                        break;
+                    case 'linkedin':
+                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'copy':
+                        navigator.clipboard.writeText(url).then(() => {
+                            this.closeShareMenu();
+                            this.showToast('¡Copiado!', 'El enlace se copió al portapapeles', '📋');
+                        }).catch(() => {
+                            this.showToast('Error', 'No se pudo copiar el enlace', '❌');
+                        });
+                        return;
+                }
+                
+                if (shareUrl) {
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    this.closeShareMenu();
+                    this.showToast('¡Compartido!', `Estudio compartido vía ${platform}`, '✅');
+                }
+            }
+            
+            downloadPDF() {
+                if (!this.currentStudy) return;
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Configuración
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 20;
+                const maxWidth = pageWidth - (margin * 2);
+                let yPos = 20;
+                
+                // Título
+                doc.setFontSize(20);
+                doc.setTextColor(0, 212, 170);
+                const titleLines = doc.splitTextToSize(this.currentStudy.Titulo || 'Sin título', maxWidth);
+                doc.text(titleLines, margin, yPos);
+                yPos += (titleLines.length * 10) + 10;
+                
+                // Línea separadora
+                doc.setDrawColor(0, 212, 170);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 10;
+                
+                // Institución/Ubicación
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Institución y Ubicación:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(11);
+                const locationLines = doc.splitTextToSize(this.currentStudy['Institucion/Ubicacion'] || 'Sin información', maxWidth);
+                doc.text(locationLines, margin, yPos);
+                yPos += (locationLines.length * 6) + 10;
+                
+                // Resumen
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Resumen:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(10);
+                const summaryLines = doc.splitTextToSize(this.currentStudy.Resumen || 'Sin resumen disponible', maxWidth);
+                
+                // Control de página
+                summaryLines.forEach((line, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(line, margin, yPos);
+                    yPos += 6;
+                });
+                
+                yPos += 5;
+                
+                // Palabras clave
+                const keywords = (this.currentStudy['Palabras Clave'] || '').split(',').filter(k => k.trim());
+                if (keywords.length > 0) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text('Palabras Clave:', margin, yPos);
+                    yPos += 7;
+                    doc.setFontSize(10);
+                    doc.setTextColor(99, 102, 241);
+                    const keywordsText = keywords.map(k => k.trim()).join(', ');
+                    const keywordLines = doc.splitTextToSize(keywordsText, maxWidth);
+                    doc.text(keywordLines, margin, yPos);
+                    yPos += (keywordLines.length * 6) + 10;
+                }
+                
+                // Enlace
+                if (yPos > 260) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Enlace al estudio completo:', margin, yPos);
+                yPos += 7;
+                doc.setFontSize(9);
+                doc.setTextColor(0, 100, 200);
+                doc.textWithLink(this.currentStudy.Enlace || 'No disponible', margin, yPos, { url: this.currentStudy.Enlace });
+                
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`SIGRID Moquegua - Página ${i} de ${pageCount}`, pageWidth / 2, 285, { align: 'center' });
+                }
+                
+                // Descargar
+                const fileName = this.sanitizeFileName(this.currentStudy.Titulo || 'estudio') + '.pdf';
+                doc.save(fileName);
+                
+                this.showToast('¡Descargado!', 'PDF generado exitosamente', '📥');
+            }
+            
+            sanitizeFileName(name) {
+                return name
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .replace(/_+/g, '_')
+                    .substring(0, 50)
+                    .toLowerCase();
+            }
+            
+            showToast(title, message, icon = '✅') {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-title').textContent = title;
+                document.getElementById('toast-message').textContent = message;
+                document.querySelector('.toast-icon').textContent = icon;
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+            
+            renderStudies() {
+                const container = document.getElementById('studies-container');
+                const start = (this.currentPage - 1) * this.studiesPerPage;
+                const end = start + this.studiesPerPage;
+                const studiesToShow = this.filteredStudies.slice(start, end);
+                
+                if (studiesToShow.length === 0) {
+                    container.innerHTML = `
+                        <div class="no-results fade-in">
+                            <div class="no-results-icon">🔍</div>
+                            <h2>No se encontraron resultados</h2>
+                            <p>Intenta ajustar los filtros o términos de búsqueda</p>
+                        </div>
+                    `;
+                    this.renderPagination();
+                    return;
+                }
+                
+                container.innerHTML = studiesToShow.map((study, index) => {
+                    const imageUrl = study['URL Imagen'] || 'https://via.placeholder.com/350x220?text=Sin+Imagen';
+                    const title = study.Titulo || 'Sin título';
+                    const summary = this.truncate(study.Resumen || 'Sin resumen', 150);
+                    const location = study['Institucion/Ubicacion'] || 'Sin información';
+                    const keywords = (study['Palabras Clave'] || '').split(',').slice(0, 3);
+                    
+                    return `
+                        <div class="study-card fade-in" style="animation-delay: ${index * 0.1}s">
+                            <div class="card-image">
+                                <img src="${imageUrl}" alt="${title}" onerror="this.src='https://via.placeholder.com/350x220?text=Sin+Imagen'">
+                                <div class="card-overlay"></div>
+                                <button class="expand-btn" onclick="app.openModal(app.filteredStudies[${start + index}])">
+                                    👁️ Ver Detalles Completos
+                                </button>
+                            </div>
+                            <div class="card-content">
+                                <h3 class="card-title">${title}</h3>
+                                <p class="card-summary">${summary}</p>
+                                <div class="card-meta">
+                                    <div class="meta-item">
+                                        <span class="meta-icon">📍</span>
+                                        <span>${location}</span>
+                                    </div>
+                                </div>
+                                ${keywords.length > 0 ? `
+                                    <div class="keywords">
+                                        ${keywords.map(k => `<span class="keyword-tag">${k.trim()}</span>`).join('')}
+                                    </div>
+                                ` : ''}
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+                
+                this.renderPagination();
+            }
+            
+            renderPagination() {
+                const container = document.getElementById('pagination-container');
+                const totalPages = Math.ceil(this.filteredStudies.length / this.studiesPerPage);
+                
+                if (totalPages <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
+                
+                let html = '<div class="pagination">';
+                
+                if (this.currentPage > 1) {
+                    html += `<button class="page-btn" onclick="app.goToPage(${this.currentPage - 1})">← Anterior</button>`;
+                }
+                
+                const maxButtons = 5;
+                let start = Math.max(1, this.currentPage - Math.floor(maxButtons / 2));
+                let end = Math.min(totalPages, start + maxButtons - 1);
+                
+                if (start > 1) {
+                    html += `<button class="page-btn" onclick="app.goToPage(1)">1</button>`;
+                    if (start > 2) html += '<span class="ellipsis">...</span>';
+                }
+                
+                for (let i = start; i <= end; i++) {
+                    html += `<button class="page-btn ${i === this.currentPage ? 'active' : ''}" onclick="app.goToPage(${i})">${i}</button>`;
+                }
+                
+                if (end < totalPages) {
+                    if (end < totalPages - 1) html += '<span class="ellipsis">...</span>';
+                    html += `<button class="page-btn" onclick="app.goToPage(${totalPages})">${totalPages}</button>`;
+                }
+                
+                if (this.currentPage < totalPages) {
+                    html += `<button class="page-btn" onclick="app.goToPage(${this.currentPage + 1})">Siguiente →</button>`;
+                }
+                
+                html += '</div>';
+                container.innerHTML = html;
+            }
+            
+            goToPage(page) {
+                this.currentPage = page;
+                this.updateStats();
+                this.renderStudies();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            
+            truncate(text, length) {
+                if (!text || text.length <= length) return text;
+                return text.substring(0, length).trim() + '...';
+            }
+            
+            shareStudy() {
+                document.getElementById('share-overlay').classList.add('active');
+                document.getElementById('share-menu').classList.add('active');
+            }
+            
+            closeShareMenu() {
+                document.getElementById('share-overlay').classList.remove('active');
+                document.getElementById('share-menu').classList.remove('active');
+            }
+            
+            shareVia(platform) {
+                if (!this.currentStudy) return;
+                
+                const title = this.currentStudy.Titulo || 'Estudio SIGRID';
+                const url = this.currentStudy.Enlace || window.location.href;
+                const text = `${title} - Estudio de Evaluación de Riesgos SIGRID Moquegua`;
+                
+                let shareUrl = '';
+                
+                switch(platform) {
+                    case 'whatsapp':
+                        shareUrl = `https://wa.me/?text=${encodeURIComponent(text + '\n' + url)}`;
+                        break;
+                    case 'email':
+                        shareUrl = `mailto:?subject=${encodeURIComponent(title)}&body=${encodeURIComponent(text + '\n\n' + url)}`;
+                        break;
+                    case 'twitter':
+                        shareUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'facebook':
+                        shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`;
+                        break;
+                    case 'linkedin':
+                        shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(url)}`;
+                        break;
+                    case 'copy':
+                        navigator.clipboard.writeText(url).then(() => {
+                            this.closeShareMenu();
+                            this.showToast('¡Copiado!', 'El enlace se copió al portapapeles', '📋');
+                        }).catch(() => {
+                            this.showToast('Error', 'No se pudo copiar el enlace', '❌');
+                        });
+                        return;
+                }
+                
+                if (shareUrl) {
+                    window.open(shareUrl, '_blank', 'width=600,height=400');
+                    this.closeShareMenu();
+                    this.showToast('¡Compartido!', `Estudio compartido vía ${platform}`, '✅');
+                }
+            }
+            
+            downloadPDF() {
+                if (!this.currentStudy) return;
+                
+                // Verificar si jsPDF está disponible
+                if (!window.jspdf) {
+                    this.showToast('Error', 'Biblioteca PDF no cargada. Recargando...', '❌');
+                    setTimeout(() => window.location.reload(), 2000);
+                    return;
+                }
+                
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                
+                // Configuración
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const margin = 20;
+                const maxWidth = pageWidth - (margin * 2);
+                let yPos = 20;
+                
+                // Título
+                doc.setFontSize(20);
+                doc.setTextColor(0, 212, 170);
+                const titleLines = doc.splitTextToSize(this.currentStudy.Titulo || 'Sin título', maxWidth);
+                doc.text(titleLines, margin, yPos);
+                yPos += (titleLines.length * 10) + 10;
+                
+                // Línea separadora
+                doc.setDrawColor(0, 212, 170);
+                doc.line(margin, yPos, pageWidth - margin, yPos);
+                yPos += 10;
+                
+                // Institución/Ubicación
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Institución y Ubicación:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(11);
+                const locationLines = doc.splitTextToSize(this.currentStudy['Institucion/Ubicacion'] || 'Sin información', maxWidth);
+                doc.text(locationLines, margin, yPos);
+                yPos += (locationLines.length * 6) + 10;
+                
+                // Resumen
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Resumen:', margin, yPos);
+                yPos += 7;
+                doc.setTextColor(50, 50, 50);
+                doc.setFontSize(10);
+                const summaryLines = doc.splitTextToSize(this.currentStudy.Resumen || 'Sin resumen disponible', maxWidth);
+                
+                // Control de página
+                summaryLines.forEach((line, index) => {
+                    if (yPos > 270) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.text(line, margin, yPos);
+                    yPos += 6;
+                });
+                
+                yPos += 5;
+                
+                // Palabras clave
+                const keywords = (this.currentStudy['Palabras Clave'] || '').split(',').filter(k => k.trim());
+                if (keywords.length > 0) {
+                    if (yPos > 250) {
+                        doc.addPage();
+                        yPos = 20;
+                    }
+                    doc.setFontSize(12);
+                    doc.setTextColor(100, 100, 100);
+                    doc.text('Palabras Clave:', margin, yPos);
+                    yPos += 7;
+                    doc.setFontSize(10);
+                    doc.setTextColor(99, 102, 241);
+                    const keywordsText = keywords.map(k => k.trim()).join(', ');
+                    const keywordLines = doc.splitTextToSize(keywordsText, maxWidth);
+                    doc.text(keywordLines, margin, yPos);
+                    yPos += (keywordLines.length * 6) + 10;
+                }
+                
+                // Enlace
+                if (yPos > 260) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+                doc.setFontSize(12);
+                doc.setTextColor(100, 100, 100);
+                doc.text('Enlace al estudio completo:', margin, yPos);
+                yPos += 7;
+                doc.setFontSize(9);
+                doc.setTextColor(0, 100, 200);
+                const linkText = this.currentStudy.Enlace || 'No disponible';
+                doc.textWithLink(linkText, margin, yPos, { url: this.currentStudy.Enlace });
+                
+                // Footer
+                const pageCount = doc.internal.getNumberOfPages();
+                for (let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setFontSize(8);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text(`SIGRID Moquegua - Página ${i} de ${pageCount}`, pageWidth / 2, 285, { align: 'center' });
+                }
+                
+                // Descargar
+                const fileName = this.sanitizeFileName(this.currentStudy.Titulo || 'estudio') + '.pdf';
+                doc.save(fileName);
+                
+                this.showToast('¡Descargado!', 'PDF generado exitosamente', '📥');
+            }
+            
+            sanitizeFileName(name) {
+                return name
+                    .replace(/[^a-z0-9]/gi, '_')
+                    .replace(/_+/g, '_')
+                    .substring(0, 50)
+                    .toLowerCase();
+            }
+            
+            showToast(title, message, icon = '✅') {
+                const toast = document.getElementById('toast');
+                document.getElementById('toast-title').textContent = title;
+                document.getElementById('toast-message').textContent = message;
+                document.querySelector('.toast-icon').textContent = icon;
+                
+                toast.classList.add('show');
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 3000);
+            }
+        }
+        
+        let app;
+        document.addEventListener('DOMContentLoaded', () => {
+            app = new ModernStudiesApp();
+        });
+    </script>
+</body>
+</html>
